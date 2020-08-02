@@ -1,0 +1,42 @@
+@font-face {
+  font-family: "Arita Heiti";
+  src: url("../font/AritaHeiti-Medium.ttf");
+}
+@font-face {
+  font-family: "AritaHeiti-Medium";
+  src: url("../font/AritaHeiti-Medium.ttf");
+}
+/* body { font-family: "arita" } */
+
+.swiper-pagination .my-bullet {
+  display: inline-block;
+  width: 40px;
+  height: 5px;
+  background: #fff;
+}
+.swiper-pagination .my-bullet-active {
+  background: rgba(0, 0, 0, 1);
+}
+.swiper-container-horizontal > .swiper-pagination-bullets {
+  bottom: 183px;
+}
+.pointer {
+  cursor: pointer;
+}
+.opacity-change {
+  transition: all 1.2s;
+  will-change: opacity, transform;
+}
+.opacity-change1 {
+  transition: all 1.8s;
+  will-change: opacity, transform;
+}
+.transition-common {
+  transition: -webkit-transform 2s cubic-bezier(0.16, 0.01, 0.13, 0.99);
+  transition: transform 2s cubic-bezier(0.16, 0.01, 0.13, 0.99);
+  transition: transform 2s cubic-bezier(0.16, 0.01, 0.13, 0.99),
+    -webkit-transform 2s cubic-bezier(0.16, 0.01, 0.13, 0.99);
+}
+.oHidden {
+  overflow: hidden;
+}
