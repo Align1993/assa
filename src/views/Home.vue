@@ -1,19 +1,34 @@
 <template>
   <div class="home">
     <div
+      class="loading-wrapper"
+      v-show="showLoading"
+    >
+      <Loading></Loading>
+    </div>
+    <div
       class="home-header animated"
+      :class="{'black': bannerIndex ==0 && !inverse}"
       flex="cross:center"
       id="header"
     >
       <div
-        class="home-header-cover  animate__animated"
+        class="home-header-cover  animate__animated2"
         :class="{fadeIn:menuActive!=-1}"
-        :style="{height:coverHeight+'px'}"
+        :style="{height:coverHeight+'px' }"
       >
 
       </div>
       <!-- v-on:mouseleave="menuActive=-1 " -->
-      <div class="wrapper z1">
+      <div
+        class="wrapper z1"
+        v-on:mouseenter="inverse=true"
+        v-on:mouseleave="scrollTop == 0 ? inverse=false : null "
+      >
+        <div
+          class="home-header-bg"
+          :class="{inverse:inverse}"
+        ></div>
         <div class="home-header-menu">
           <div
             class="item pointer"
@@ -45,18 +60,18 @@
                 <!--  {{ item.name }} -->
               </div>
             </div>
+
+          </div>
+          <div
+            class="logoArea"
+            :class="{'black': bannerIndex ==0&& !inverse}"
+          >
+
           </div>
         </div>
 
-        <div
-          class="home-header-bg"
-          :class="{inverse:inverse}"
-        ></div>
-
       </div>
-      <div class="logoArea">
 
-      </div>
     </div>
     <div class="swiper-wrapper">
       <swiper
@@ -71,7 +86,6 @@
           :key='item.id'
         >
           <img
-            :style="{transform:` scale(${ t1_z},${ t1_z})`, opacity:t1_opacity }"
             class='swiper-img'
             :src='item.imgUrl'
             alt=""
@@ -98,7 +112,8 @@ transition-common "
         </div>
         <div class="description">
 
-          让采撷玫瑰的人，也看看她的刺。 她可以撩你，也能独自美丽。
+          让采撷玫瑰的人，也看看她的刺。<br />
+          她可以撩你，也能独自美丽。
 
         </div>
         <div
@@ -372,6 +387,7 @@ transition-common ">
 <script>
 // require styles
 import "swiper/dist/css/swiper.css";
+import Loading from "@/components/Loading.vue";
 
 import { swiper, swiperSlide } from "vue-awesome-swiper";
 
@@ -404,6 +420,7 @@ export default {
   components: {
     swiper,
     swiperSlide,
+    Loading,
   },
   methods: {
     runAnimations(animations, element) {
@@ -465,6 +482,7 @@ export default {
         window.pageYOffset ||
         document.documentElement.scrollTop ||
         document.body.scrollTop;
+      this.scrollTop = scrollTop;
       console.log(scrollTop);
       this.positionY1 = 0 - scrollTop * this.ratio;
       this.positionY2 = -4 - scrollTop * 0.05;
@@ -492,7 +510,9 @@ export default {
 
         // this.t2_Y = 0 - scrollTop * this.ratio;
       } else {
+        // if (!this.menuActive) {
         this.inverse = false;
+        // }
         this.titlePositon = "static";
         this.titleColor = "transparent";
         this.titleBorder = "0";
@@ -500,7 +520,11 @@ export default {
     },
   },
   data() {
+    const that = this;
     return {
+      scrollTop: 1,
+      bannerIndex: null,
+      showLoading: true,
       mg: true,
       sShow: true,
       shShow: true,
@@ -528,8 +552,19 @@ export default {
         },
         loop: true,
         effect: "fade",
+        //设定初始化时slide的索引
+        initialSlide: 0,
         fadeEffect: {
           crossFade: true,
+        },
+        on: {
+          //滑动之后回调函数
+          slideChangeTransitionStart: function () {
+            /* realIndex为滚动到当前的slide索引值 */
+            if (!that.showLoading) {
+              that.bannerIndex = this.realIndex;
+            }
+          },
         },
         pagination: {
           el: ".swiper-pagination",
@@ -556,31 +591,76 @@ export default {
         {
           groupName: "色系列",
           children: [
-            { name: "  Pillow & You<br/> 枕边的你  " },
-            { name: " Sensory Hunter <br/> 感官猎人" },
-            { name: "  The Last Chapter Rose<br/> 终章玫瑰" },
+            {
+              name:
+                "  Pillow & You<br/> <span style='font-size:18px;line-height: 22px;'>枕边的你</span>  ",
+            },
+            {
+              name:
+                " Sensory Hunter <br/><span style='font-size:18px;line-height: 22px;'>感官猎人</span> ",
+            },
+            {
+              name:
+                "  The Last Chapter Rose<br/><span style='font-size:18px;line-height: 22px;'>终章玫瑰</span> ",
+            },
           ],
         },
         {
           groupName: "欲系列",
           children: [
-            { name: "Secret Fruit<br/> 秘果" },
-            { name: "Ego <br/> 忠于自己" },
-            { name: "Low Fever <br/> 微烧" },
-            { name: " Don't Leave Me Alone <br/> 不要抛弃我" },
-            { name: "The Lonely Island <br/> 孤岛" },
-            { name: "The Girl Steals Hearts <br/> 偷心少女" },
-            { name: "Goddess of Night <br/> 月下缪斯" },
-            { name: "Whale Fall <br/> 鲸落" },
+            {
+              name:
+                "Secret Fruit<br/> <span style='font-size:18px;line-height: 22px;'>秘果</span>",
+            },
+            {
+              name:
+                "Ego <br/> <span style='font-size:18px;line-height: 22px;'>忠于自己</span> ",
+            },
+            {
+              name:
+                "Low Fever <br/>  <span style='font-size:18px;line-height: 22px;'>微烧</span>",
+            },
+            {
+              name:
+                " Don't Leave Me Alone <br/> <span style='font-size:18px;line-height: 22px;'>不要抛弃我</span> ",
+            },
+            {
+              name:
+                "The Lonely Island <br/> <span style='font-size:18px;line-height: 22px;'>孤岛</span> ",
+            },
+            {
+              name:
+                "The Girl Steals Hearts <br/> <span style='font-size:18px;line-height: 22px;'>偷心少女</span> ",
+            },
+            {
+              name:
+                "Goddess of Night <br/> <span style='font-size:18px;line-height: 22px;'>月下缪斯</span> ",
+            },
+            {
+              name:
+                "Whale Fall <br/> <span style='font-size:18px'>鲸落</span> ",
+            },
           ],
         },
         {
           groupName: "城市系列",
           children: [
-            { name: "Happy Water-ShangHai <br/> 快乐水 上海" },
-            { name: " Idyll-ChengDu  <br/> 田园诗 成都" },
-            { name: "Jóu Sàhn-GuangZhou <br/> 早上好 广州" },
-            { name: "Warm Wint <br/> 暖冬 哈尔滨" },
+            {
+              name:
+                "Happy Water-ShangHai <br/><span style='font-size:18px;line-height: 22px;'> 快乐水 上海</span> ",
+            },
+            {
+              name:
+                " Idyll-ChengDu  <br/><span style='font-size:18px;line-height: 22px;'> 田园诗 成都</span> ",
+            },
+            {
+              name:
+                "Jóu Sàhn-GuangZhou <br/><span style='font-size:18px;line-height: 22px;'> 早上好 广州</span> ",
+            },
+            {
+              name:
+                "Warm Wint <br/><span style='font-size:18px;line-height: 22px;'> 暖冬 哈尔滨</span> ",
+            },
           ],
         },
         { groupName: "品牌故事", children: [] },
@@ -591,30 +671,65 @@ export default {
     coverHeight() {
       if (this.menuActive != -1) {
         let item = this.menuList[this.menuActive];
-        let h = item.children ? item.children.length * 60 : 0;
-        if (item.children.length > 7) {
+        let h = item.children ? item.children.length * 67 + 230 : 0;
+        if (item.children.length > 6) {
           h = h - 30;
         }
         return h;
       } else {
-        return 0;
+        setTimeout(() => {
+          return 0;
+        }, 2000);
       }
     },
-    swiper() {
-      return this.$refs.mySwiper.swiper;
-    },
   },
+
   mounted() {
-    window.addEventListener(
-      "scroll",
-      this.throttle(this.handleScroll, 100, 500)
-    );
+    let scrollTop =
+      window.pageYOffset ||
+      document.documentElement.scrollTop ||
+      document.body.scrollTop;
+    window.addEventListener("scroll", this.handleScroll);
     this.$nextTick(() => {
       this.mg = false;
       this.sShow = false;
       this.shShow = false;
     });
-    this.swiper(3, 1000, false);
+
+    const imgarr = [
+      "http://gw.mcst.top/img/banner1.70d7f538.png",
+      "http://gw.mcst.top/img/banner3.927ff354.png",
+      "http://gw.mcst.top/img/banner2.85656e72.png",
+
+      /*   "http://www.whtlnet.com/uploadfile/ImgFile/2013-11/Img2013111300220767486.jpg",
+      "http://www.whtlnet.com/uploadfile/ImgFile/2013-04/Img2013041116301259095.jpg",
+      "http://www.whtlnet.com/uploadfile/ImgFile/2013-04/Img2013041116293911935.jpg", */
+    ];
+
+    //创建每个图片的promise对象
+    const promiseImgAllArr = [],
+      imgAllarr = [];
+    for (let i = 0; i < imgarr.length; i++) {
+      promiseImgAllArr[i] = new Promise((resolve, reject) => {
+        imgAllarr[i] = new Image();
+        imgAllarr[i].src = imgarr[i];
+        imgAllarr[i].onload = function () {
+          //第i张加载完成
+          console.log(`第${i}张加载完成`);
+          resolve(imgAllarr[i]);
+        };
+      });
+    }
+
+    //将图片的promise对象的集合传给promise的all方法作为参数
+    Promise.all(promiseImgAllArr).then((img) => {
+      //全部加载完成
+      this.showLoading = false;
+      this.bannerIndex = 0;
+      // this.swiper.slideTo(1, 1000, false);
+      //  $('.swipe ul').height($('.swipe img').css('height'));
+    });
+
     /* this.runAnimations([{
       type:"fadeInDown",
       duration:1,
@@ -629,7 +744,18 @@ export default {
 .wrapper .swiper-pagination-bullet-active {
   background: #fff !important;
 }
-
+.loading-wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99;
+}
 .swiper-wrapper {
   overflow: hidden;
   width: 100%;
@@ -660,6 +786,7 @@ export default {
       font-weight: normal;
       color: rgba(0, 0, 0, 1);
       line-height: 40px;
+      white-space: nowrap;
     }
     .button {
       position: relative;
@@ -684,19 +811,19 @@ export default {
 
         vertical-align: -2px;
 
-        transition: opacity 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99),
-          -webkit-transform 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99);
-        transition: transform 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99),
-          opacity 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99);
-        transition: transform 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99),
-          opacity 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99),
-          -webkit-transform 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99);
+        transition: opacity 0.8s cubic-bezier(0.16, 0.01, 0.13, 0.99),
+          -webkit-transform 0.8s cubic-bezier(0.16, 0.01, 0.13, 0.99);
+        transition: transform 0.8s cubic-bezier(0.16, 0.01, 0.13, 0.99),
+          opacity 0.8s cubic-bezier(0.16, 0.01, 0.13, 0.99);
+        transition: transform 0.8s cubic-bezier(0.16, 0.01, 0.13, 0.99),
+          opacity 0.8s cubic-bezier(0.16, 0.01, 0.13, 0.99),
+          -webkit-transform 0.8s cubic-bezier(0.16, 0.01, 0.13, 0.99);
       }
       .enterFadeInLeft {
         .txt {
           position: absolute;
           transform: translateX(65px);
-          transition: transform 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99);
+          transition: transform 0.8s cubic-bezier(0.16, 0.01, 0.13, 0.99);
         }
 
         img {
@@ -721,6 +848,14 @@ export default {
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
 }
+.animate__animated2 {
+  -webkit-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-duration: var(--animate-duration);
+  animation-duration: var(--animate-duration);
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
 .home {
   overflow-x: hidden;
   .wrapper {
@@ -738,28 +873,30 @@ export default {
     color: #fff;
     line-height: 24px;
     // background: red;
-    .logoArea {
-      position: absolute;
-      z-index: 99;
-      width: 335px;
-      left: 50%;
-      transform: translateX(-50%);
-      height: 100%;
+    &.black {
+      color: #0d0c0c;
     }
+
     &-cover {
-      display: none;
+      // display: none;
       position: absolute;
       width: 100%;
-      height: 0;
+      height: 100px;
+      top: -130px;
       opacity: 0;
-      top: 91px;
+      background: rgba(24, 24, 23, 1);
+      animation-name: fadeOut;
+      animation-duration: 1s;
+      transition: all 1.2s ease;
+
       &.fadeIn {
-        display: block;
+        // display: block;
+        transition: all 0.5s ease;
         // animation-name: fadeInDown;
         animation-name: fadeIn;
-        animation-duration: 0.5s;
+        animation-duration: 1s;
         background: rgba(24, 24, 23, 0.75);
-        // height: 180px;
+        // background: rgba(24, 24, 23, 0.75); // height: 180px;
       }
     }
     &-bg {
@@ -771,13 +908,9 @@ export default {
       z-index: -1;
       background: #000000;
       opacity: 0;
-      transition: opacity 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99),
-        -webkit-transform 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99);
-      transition: transform 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99),
-        opacity 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99);
-      transition: transform 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99),
-        opacity 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99),
-        -webkit-transform 0.5s cubic-bezier(0.16, 0.01, 0.13, 0.99);
+      animation-name: fadeOut;
+      animation-duration: 1s;
+      transition: all 1s ease;
       &.inverse {
         opacity: 1;
 
@@ -786,26 +919,38 @@ export default {
       }
     }
     &-menu {
-      text-align: center;
-
+      position: relative;
+      width: 1011px;
+      margin: 0 auto;
+      white-space: nowrap;
+      // text-align: center;
+      .logoArea {
+        position: absolute;
+        z-index: 19;
+        width: 300px;
+        left: 350px;
+        top: -9px;
+        height: 42px;
+        background: url(./imgs/logo-bot.png) no-repeat 0 center;
+        background-size: 100% 100%;
+        &.black {
+          background: url(./imgs/logo-black.png) no-repeat 0 center;
+        }
+      }
       .item {
         position: relative;
 
         display: inline-block;
         vertical-align: middle;
-        margin-right: 104px;
+        &:first-child {
+          margin-right: 104px;
+        }
+        &:nth-child(2) {
+          margin-right: 110px;
+        }
         &:nth-child(3) {
-          margin-left: 300px;
-          &:before {
-            content: "";
-            position: absolute;
-            right: 155%;
-            width: 300px;
-            top: -10px;
-            height: 42px;
-            background: url(./imgs/logo-bot.png) no-repeat 0 center;
-            background-size: 100% 100%;
-          }
+          margin-left: 407px;
+          margin-right: 69px;
         }
 
         &:last-child {
@@ -849,9 +994,13 @@ export default {
           top: 100%;
           white-space: nowrap;
           div {
+            height: 46px;
             margin-top: 16px;
             line-height: 18px;
-            font-size: 14px;
+            font-size: 15px;
+          }
+          span {
+            font-size: 18px;
           }
           &.show {
             animation-name: fadeIn;
